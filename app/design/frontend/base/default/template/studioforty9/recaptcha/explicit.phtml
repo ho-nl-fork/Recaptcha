@@ -12,28 +12,57 @@
  * @see       Studioforty9_Recaptcha_Block_Explicit
  */
 $id = $this->getRecaptchaId();
+
+$formHandle = $this->getFormHandle() ? $this->getFormHandle() : 'dataForm';
+$buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'button[type=submit]';
+
 ?>
 <?php if ($this->isAllowed($this->getAction()->getFullActionName())): ?>
-
-<div class="recaptcha" style="overflow:hidden;position:relative;margin-bottom:10px;">
-    <input type="checkbox" id="cb-<?php echo $id ?>" name="cb-<?php echo $id ?>" value="" class="required-entry" style="visibility:hidden; position:absolute; left:-1000000px" />
-    <div id="el-<?php echo $id ?>"></div>
-    <script type="text/javascript">
-        var onloadCallback = function() {
-            grecaptcha.render('el-<?php echo $id ?>', {
-                'sitekey': "<?php echo $this->getSiteKey(); ?>",
-                'theme': "<?php echo $this->getTheme(); ?>",
-                'type': "<?php echo $this->getType(); ?>",
-                'size': "<?php echo $this->getSize(); ?>",
-                'callback': function(response) {
-                    if (response.length > 0) {
-                        $('cb-<?php echo $id ?>').writeAttribute('value', 'checked');
-                        $('cb-<?php echo $id ?>').checked = true;
-                    }
-                }
-            });
-        };
-    </script>
-    <?php echo $this->getRecaptchaScript(); ?>
-</div>
+    <?php if ($this->getRecaptchaType() == 'invisible'): ?>
+        <div class="recaptcha">
+            <div id="el-<?php echo $id ?>"></div>
+            <script type="text/javascript">
+                var onloadCallback_<?php echo $id ?> = function() {
+                    var button = jQuery('#el-<?php echo $id ?>').closest('form').find('<?php echo $buttonSelector ?>')[0];
+                    grecaptcha.render(button, {
+                        'sitekey': "<?php echo $this->getSiteKey(); ?>",
+                        'theme': "<?php echo $this->getTheme(); ?>",
+                        'type': "<?php echo $this->getType(); ?>",
+                        'size': "invisible",
+                        'badge': "<?php echo $this->getBadgeLocation(); ?>",
+                        'callback': function(response) {
+                            var form = <?php echo $formHandle ?>;
+                            if(form.validator && form.validator.validate()){
+                                form.submit();
+                            } else {
+                                grecaptcha.reset();
+                            }
+                        }
+                    });
+                };
+            </script>
+        </div>
+    <?php else: ?>
+        <div class="recaptcha" style="overflow:hidden;position:relative;margin-bottom:10px;">
+            <input type="checkbox" id="cb-<?php echo $id ?>" name="cb-<?php echo $id ?>" value="" class="required-entry" style="visibility:hidden; position:absolute; left:-1000000px" />
+            <div id="el-<?php echo $id ?>"></div>
+            <script type="text/javascript">
+                var onloadCallback_<?php echo $id ?> = function() {
+                    grecaptcha.render('el-<?php echo $id ?>', {
+                        'sitekey': "<?php echo $this->getSiteKey(); ?>",
+                        'theme': "<?php echo $this->getTheme(); ?>",
+                        'type': "<?php echo $this->getType(); ?>",
+                        'size': "<?php echo $this->getSize(); ?>",
+                        'callback': function(response) {
+                            if (response.length > 0) {
+                                $('cb-<?php echo $id ?>').writeAttribute('value', 'checked');
+                                $('cb-<?php echo $id ?>').checked = true;
+                            }
+                        }
+                    });
+                };
+            </script>
+        </div>
+    <?php endif; ?>
+    <?php echo $this->getRecaptchaScript($id); ?>
 <?php endif; ?>

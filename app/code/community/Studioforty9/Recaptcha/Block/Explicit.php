@@ -152,9 +152,10 @@ class Studioforty9_Recaptcha_Block_Explicit extends Mage_Core_Block_Template
     /**
      * Get the reCAPTACHA javascript code.
      *
+     * @param $id string callback identifier suffix
      * @return string
      */
-    public function getRecaptchaScript()
+    public function getRecaptchaScript($id = '')
     {
         if (! $this->_getHelper()->isEnabled()) {
             return '';
@@ -170,7 +171,7 @@ class Studioforty9_Recaptcha_Block_Explicit extends Mage_Core_Block_Template
         }
 
         $query = array(
-            'onload' => 'onloadCallback',
+            'onload' => 'onloadCallback_'.$id,
             'render' => 'explicit',
             'hl'     => $lang
         );
