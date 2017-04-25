@@ -28,6 +28,7 @@ class Studioforty9_Recaptcha_Helper_Data extends Mage_Core_Helper_Abstract
     const MODULE_ENABLED = 'google/recaptcha/enabled';
     const MODULE_KEY_SITE = 'google/recaptcha/site_key';
     const MODULE_KEY_SECRET = 'google/recaptcha/secret_key';
+    const MODULE_KEY_RECAPTCHA_TYPE = 'google/recaptcha/recaptcha_type';
     const MODULE_KEY_THEME = 'google/recaptcha/theme';
     const MODULE_KEY_SIZE = 'google/recaptcha/size';
     const MODULE_KEY_TYPE = 'google/recaptcha/type';
@@ -65,6 +66,17 @@ class Studioforty9_Recaptcha_Helper_Data extends Mage_Core_Helper_Abstract
     public function getSecretKey()
     {
         return Mage::getStoreConfig(self::MODULE_KEY_SECRET);
+    }
+
+    /**
+     * The recaptcha  type.
+     *
+     * @codeCoverageIgnore
+     * @return string
+     */
+    public function getRecaptchaType()
+    {
+        return Mage::getStoreConfig(self::MODULE_KEY_RECAPTCHA_TYPE);
     }
 
     /**

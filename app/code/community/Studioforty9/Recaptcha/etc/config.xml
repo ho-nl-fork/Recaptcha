@@ -146,6 +146,7 @@
                 <enabled_customer_registration>0</enabled_customer_registration>
                 <site_key></site_key>
                 <secret_key></secret_key>
+                <recaptcha_type>v2</recaptcha_type>
                 <theme>light</theme>
                 <enabled_routes><![CDATA[]]></enabled_routes>
             </recaptcha>
