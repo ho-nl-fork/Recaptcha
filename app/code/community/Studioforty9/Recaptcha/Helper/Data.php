@@ -88,7 +88,7 @@ class Studioforty9_Recaptcha_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getBadgeLocation()
     {
-        return Mage::getStoreConfig(self::MODULE_KEY_RECAPTCHA_TYPE);
+        return Mage::getStoreConfig(self::MODULE_KEY_BADGE_LOCATION);
     }
 
     /**
