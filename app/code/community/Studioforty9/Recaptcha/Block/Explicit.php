@@ -106,6 +106,17 @@ class Studioforty9_Recaptcha_Block_Explicit extends Mage_Core_Block_Template
     }
 
     /**
+     * Get the invisible recaptcha badge location setting.
+     *
+     * @codeCoverageIgnore
+     * @return string
+     */
+    public function getBadgeLocation()
+    {
+        return $this->_getHelper()->getBadgeLocation();
+    }
+
+    /**
      * Get the recaptcha theme setting.
      *
      * @codeCoverageIgnore
