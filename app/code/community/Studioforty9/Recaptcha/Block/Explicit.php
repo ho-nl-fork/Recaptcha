@@ -95,6 +95,17 @@ class Studioforty9_Recaptcha_Block_Explicit extends Mage_Core_Block_Template
     }
 
     /**
+     * Get the recaptcha type (v2/invisible/etc) setting.
+     *
+     * @codeCoverageIgnore
+     * @return string
+     */
+    public function getRecaptchaType()
+    {
+        return $this->_getHelper()->getRecaptchaType();
+    }
+
+    /**
      * Get the recaptcha theme setting.
      *
      * @codeCoverageIgnore
@@ -106,7 +117,7 @@ class Studioforty9_Recaptcha_Block_Explicit extends Mage_Core_Block_Template
     }
 
     /**
-     * Get the recaptcha type setting.
+     * Get the recaptcha display type setting.
      *
      * @codeCoverageIgnore
      * @return string
