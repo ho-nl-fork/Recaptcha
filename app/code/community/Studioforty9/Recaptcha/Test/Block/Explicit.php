@@ -93,7 +93,7 @@ class Studioforty9_Recaptcha_Test_Block_Explicit extends EcomDev_PHPUnit_Test_Ca
         Mage::getSingleton('core/translate')->setLocale($locale)->init('frontend', true);
         $this->replaceByMock('helper', 'studioforty9_recaptcha', $dataHelper);
 
-        $expected = '<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit&hl='.$lang.'" async defer></script>';
+        $expected = '<script src="https://www.google.com/recaptcha/api.js?onload=recaptchaOnloadCallback&render=explicit&hl='.$lang.'" async defer></script>';
         $actual = $this->block->getRecaptchaScript();
         $this->assertEquals($expected, $actual);
 

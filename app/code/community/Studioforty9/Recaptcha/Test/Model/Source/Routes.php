@@ -81,7 +81,14 @@ class Studioforty9_Recaptcha_Test_Model_Source_Routes extends EcomDev_PHPUnit_Te
         $this->assertArrayHasKey('label', $password);
         $this->assertEquals('customer_account_forgotpassword', $password['value']);
         $this->assertEquals('Forgot Password Form', $password['label']);
-        
+
+        $newsletter = $options[6];
+        $this->assertInternalType('array', $newsletter);
+        $this->assertArrayHasKey('value', $newsletter);
+        $this->assertArrayHasKey('label', $newsletter);
+        $this->assertEquals('newsletter_subscriber_new', $newsletter['value']);
+        $this->assertEquals('Newsletter Subscription Form', $newsletter['label']);
+
         $this->assertEventDispatched('studioforty9_recaptcha_routes');
     }
 }
