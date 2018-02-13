@@ -22,11 +22,14 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
         <div class="recaptcha" id="recaptcha-<?php echo $id ?>">
             <script type="text/javascript">
                 if (typeof recaptchaOnloadCallbacks === 'undefined') {
-                    recaptchaOnloadCallbacks = [];
+                    var recaptchaOnloadCallbacks = [];
+                }
+                if (typeof recaptchaWidgets === 'undefined') {
+                    var recaptchaWidgets = [];
                 }
                 recaptchaOnloadCallbacks.push(function () {
                     var button = jQuery('#recaptcha-<?php echo $id ?>').closest('form').find('<?php echo $buttonSelector ?>')[0];
-                    grecaptcha.render(button, {
+                    var widget_id = grecaptcha.render(button, {
                         'sitekey': "<?php echo $this->getSiteKey(); ?>",
                         'theme': "<?php echo $this->getTheme(); ?>",
                         'type': "<?php echo $this->getType(); ?>",
@@ -34,13 +37,15 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
                         'badge': "<?php echo $this->getBadgeLocation(); ?>",
                         'callback': function(response) {
                             var form = <?php echo $formHandle ?>;
-                            if(form.validator && form.validator.validate()){
+                            if (form.validator && form.validator.validate()){
                                 form.submit();
                             } else {
-                                grecaptcha.reset();
+                                grecaptcha.reset(recaptchaWidgets['#recaptcha-<?php echo $id ?>']);
                             }
                         }
                     });
+                    jQuery(button).attr('data-widget-id', widget_id);
+                    recaptchaWidgets['#recaptcha-<?php echo $id ?>'] = widget_id;
                 });
             </script>
         </div>
@@ -50,7 +55,7 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
             <div id="el-<?php echo $id ?>"></div>
             <script type="text/javascript">
                 if (typeof recaptchaOnloadCallbacks === 'undefined') {
-                    recaptchaOnloadCallbacks = [];
+                    var recaptchaOnloadCallbacks = [];
                 }
                 recaptchaOnloadCallbacks.push(function () {
                     grecaptcha.render('el-<?php echo $id ?>', {
@@ -69,6 +74,8 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
             </script>
         </div>
     <?php endif; ?>
+    <?php if ($this->getInitialized() == false): ?>
+    <?php $this->setInitialized(true) ?>
     <?php echo $this->getRecaptchaScript($id); ?>
     <script>
         function recaptchaOnloadCallback()
@@ -83,4 +90,5 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
             recaptchaOnloadCallbacks = [];
         }
     </script>
+    <?php endif; ?>
 <?php endif; ?>
