@@ -21,31 +21,31 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
     <?php if ($this->getRecaptchaType() == 'invisible'): ?>
         <div class="recaptcha" id="recaptcha-<?php echo $id ?>">
             <script type="text/javascript">
-                if (typeof recaptchaOnloadCallbacks === 'undefined') {
-                    var recaptchaOnloadCallbacks = [];
+                if (typeof recaptchaRenderCallbacks === 'undefined') {
+                    var recaptchaRenderCallbacks = [];
                 }
-                if (typeof recaptchaWidgets === 'undefined') {
-                    var recaptchaWidgets = [];
-                }
-                recaptchaOnloadCallbacks.push(function () {
+                recaptchaRenderCallbacks.push(function () {
                     var button = jQuery('#recaptcha-<?php echo $id ?>').closest('form').find('<?php echo $buttonSelector ?>')[0];
-                    var widget_id = grecaptcha.render(button, {
+                    var widgetId = grecaptcha.render(button, {
                         'sitekey': "<?php echo $this->getSiteKey(); ?>",
                         'theme': "<?php echo $this->getTheme(); ?>",
                         'type': "<?php echo $this->getType(); ?>",
                         'size': "invisible",
                         'badge': "<?php echo $this->getBadgeLocation(); ?>",
+                        'error-callback': function() {
+                            <?php // @todo: try again after a timeout ?>
+                            console.log('Failed to initialize recaptcha widget '+widgetId+' due to connectivity issues');
+                        },
                         'callback': function(response) {
                             var form = <?php echo $formHandle ?>;
                             if (form.validator && form.validator.validate()){
                                 form.submit();
                             } else {
-                                grecaptcha.reset(recaptchaWidgets['#recaptcha-<?php echo $id ?>']);
+                                grecaptcha.reset(widgetId);
                             }
                         }
                     });
-                    jQuery(button).attr('data-widget-id', widget_id);
-                    recaptchaWidgets['#recaptcha-<?php echo $id ?>'] = widget_id;
+                    jQuery(button).attr('data-widget-id', widgetId);
                 });
             </script>
         </div>
@@ -54,10 +54,10 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
             <input type="checkbox" id="cb-<?php echo $id ?>" name="cb-<?php echo $id ?>" value="" class="required-entry" style="visibility:hidden; position:absolute; left:-1000000px" />
             <div id="el-<?php echo $id ?>"></div>
             <script type="text/javascript">
-                if (typeof recaptchaOnloadCallbacks === 'undefined') {
-                    var recaptchaOnloadCallbacks = [];
+                if (typeof recaptchaRenderCallbacks === 'undefined') {
+                    var recaptchaRenderCallbacks = [];
                 }
-                recaptchaOnloadCallbacks.push(function () {
+                recaptchaRenderCallbacks.push(function () {
                     grecaptcha.render('el-<?php echo $id ?>', {
                         'sitekey': "<?php echo $this->getSiteKey(); ?>",
                         'theme': "<?php echo $this->getTheme(); ?>",
@@ -76,18 +76,24 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
     <?php endif; ?>
     <?php if ($this->getInitialized() == false): ?>
     <?php $this->setInitialized(true) ?>
-    <?php echo $this->getRecaptchaScript($id); ?>
+    <?php
+        /* This renders the grecaptcha script tag. This script tag should only be added once. Only once this script is
+         * loaded can we call grecaptcha.render() to initialize the recaptcha. Since we want to support multiple
+         * recaptchas on the same page, a global is used to register and invoke the render callbacks for each recaptcha.
+         */
+    ?>
+    <?php echo $this->getRecaptchaScript(); ?>
     <script>
         function recaptchaOnloadCallback()
         {
-            if (typeof recaptchaOnloadCallbacks === "undefined") {
+            if (typeof recaptchaRenderCallbacks === "undefined") {
                 return;
             }
 
-            for (var i = 0; i < recaptchaOnloadCallbacks.length; i++) {
-                (recaptchaOnloadCallbacks[i])();
+            for (var i = 0; i < recaptchaRenderCallbacks.length; i++) {
+                (recaptchaRenderCallbacks[i])();
             }
-            recaptchaOnloadCallbacks = [];
+            recaptchaRenderCallbacks = [];
         }
     </script>
     <?php endif; ?>
