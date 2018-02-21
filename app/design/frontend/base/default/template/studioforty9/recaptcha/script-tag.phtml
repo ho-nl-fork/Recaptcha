@@ -34,6 +34,14 @@
     // Attempt to sanely handle errors with reCaptcha's vague docs and lack of error information
     function recaptchaShowErrorAndRetry(id, widgetId)
     {
+        if (recaptchaResetTimers[id]) {
+            clearTimeout(recaptchaErrorTimers[id]);
+        }
+        if (recaptchaHideTimers[id]) {
+            clearTimeout(recaptchaHideTimers[id]);
+            recaptchaHideTimers[id] = false;
+        }
+
         var message = jQuery('.grecaptcha-user-facing-error').html();
         var item = jQuery('#recaptcha-messages-'+id+' li.error-msg ul li');
         var container = jQuery('#recaptcha-messages-'+id);
@@ -55,16 +63,7 @@
         item.text('<?php echo $this->__('Failed to load reCaptcha. Please check your network connection and try again'); ?>');
         container.show();
 
-        if (recaptchaResetTimers[id]) {
-            clearTimeout(recaptchaErrorTimers[id]);
-        }
-        if (recaptchaHideTimers[id]) {
-            clearTimeout(recaptchaHideTimers[id]);
-            recaptchaHideTimers[id] = false;
-        }
-
         recaptchaResetTimers[id] = setTimeout(function () {
-            console.log('reCaptcha ('+widgetId+') retrying');
             grecaptcha.reset(widgetId);
             recaptchaResetTimers[id] = false;
 
