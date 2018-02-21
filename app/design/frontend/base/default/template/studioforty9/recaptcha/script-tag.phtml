@@ -26,5 +26,58 @@
         }
         recaptchaRenderCallbacks = [];
     }
+
+    var recaptchaResetTimers = [];
+    var recaptchaHideTimers = [];
+    var recaptchaRetryCounts = [];
+
+    // Attempt to sanely handle errors with reCaptcha's vague docs and lack of error information
+    function recaptchaShowErrorAndRetry(id, widgetId)
+    {
+        var message = jQuery('.grecaptcha-user-facing-error').html();
+        var item = jQuery('#recaptcha-messages-'+id+' li.error-msg ul li');
+        var container = jQuery('#recaptcha-messages-'+id);
+
+        console.log('reCaptcha ('+widgetId+') error: '+message);
+
+        if (!recaptchaRetryCounts[id]) {
+            recaptchaRetryCounts[id] = 0;
+        }
+        var count = ++recaptchaRetryCounts[id];
+
+        if (count > 15) {
+            console.log('reCaptcha ('+widgetId+') giving up after '+count+' attempts');
+            item.text('<?php echo $this->__('Failed to load reCaptcha. Please reload the page and try again'); ?>');
+            container.show();
+            return;
+        }
+        console.log('reCaptcha ('+widgetId+') trying again in 5 seconds');
+        item.text('<?php echo $this->__('Failed to load reCaptcha. Please check your network connection and try again'); ?>');
+        container.show();
+
+        if (recaptchaResetTimers[id]) {
+            clearTimeout(recaptchaErrorTimers[id]);
+        }
+        if (recaptchaHideTimers[id]) {
+            clearTimeout(recaptchaHideTimers[id]);
+            recaptchaHideTimers[id] = false;
+        }
+
+        recaptchaResetTimers[id] = setTimeout(function () {
+            console.log('reCaptcha ('+widgetId+') retrying');
+            grecaptcha.reset(widgetId);
+            recaptchaResetTimers[id] = false;
+
+            // Hide the error message a little later, to avoid 'blinking' when resetting immediately fails
+            if (recaptchaHideTimers[id]) {
+                clearTimeout(recaptchaHideTimers[id]);
+            }
+            recaptchaHideTimers[id] = setTimeout(function () {
+                recaptchaHideTimers[id] = false;
+                container.fadeOut();
+            }, 1000);
+
+        }, 5000);
+    }
 </script>
 <?php echo $this->getRecaptchaScript(); ?>

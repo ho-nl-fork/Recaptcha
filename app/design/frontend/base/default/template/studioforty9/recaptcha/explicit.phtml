@@ -11,6 +11,8 @@
  * @link      https://github.com/studioforty9/recaptcha
  * @see       Studioforty9_Recaptcha_Block_Explicit
  */
+
+/** @var $this Studioforty9_Recaptcha_Block_Explicit */
 $id = $this->getRecaptchaId();
 
 $formHandle = $this->getFormHandle() ? $this->getFormHandle() : 'dataForm';
@@ -19,6 +21,9 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
 ?>
 <?php if ($this->isAllowed($this->getAction()->getFullActionName())): ?>
     <?php if ($this->getRecaptchaType() == 'invisible'): ?>
+        <ul class="messages" id="recaptcha-messages-<?php echo $id ?>" style="display: none">
+            <li class="error-msg"><ul><li></li></ul></li>
+        </ul>
         <div class="recaptcha" id="recaptcha-<?php echo $id ?>">
             <script type="text/javascript">
                 if (typeof recaptchaRenderCallbacks === 'undefined') {
@@ -33,18 +38,20 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
                         'size': "invisible",
                         'badge': "<?php echo $this->getBadgeLocation(); ?>",
                         'error-callback': function() {
-                            <?php // @todo: try again after a timeout ?>
-                            console.log('Failed to initialize recaptcha widget '+widgetId+' due to connectivity issues');
+                            recaptchaShowErrorAndRetry('<?php echo $id ?>', widgetId);
                         },
                         'callback': function(response) {
                             var form = <?php echo $formHandle ?>;
                             if (form.validator && form.validator.validate()){
+                                console.log('reCaptcha ('+widgetId+') passsed and form is valid');
                                 form.submit();
                             } else {
+                                console.log('reCaptcha ('+widgetId+') passsed but form not valid, resetting');
                                 grecaptcha.reset(widgetId);
                             }
                         }
                     });
+                    console.log('reCaptcha widget '+widgetId+' rendered');
                     jQuery(button).attr('data-widget-id', widgetId);
                 });
             </script>
