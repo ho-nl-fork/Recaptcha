@@ -74,27 +74,4 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
             </script>
         </div>
     <?php endif; ?>
-    <?php if ($this->getInitialized() == false): ?>
-    <?php $this->setInitialized(true) ?>
-    <?php
-        /* This renders the grecaptcha script tag. This script tag should only be added once. Only once this script is
-         * loaded can we call grecaptcha.render() to initialize the recaptcha. Since we want to support multiple
-         * recaptchas on the same page, a global is used to register and invoke the render callbacks for each recaptcha.
-         */
-    ?>
-    <?php echo $this->getRecaptchaScript(); ?>
-    <script>
-        function recaptchaOnloadCallback()
-        {
-            if (typeof recaptchaRenderCallbacks === "undefined") {
-                return;
-            }
-
-            for (var i = 0; i < recaptchaRenderCallbacks.length; i++) {
-                (recaptchaRenderCallbacks[i])();
-            }
-            recaptchaRenderCallbacks = [];
-        }
-    </script>
-    <?php endif; ?>
 <?php endif; ?>

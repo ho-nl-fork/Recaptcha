@@ -14,18 +14,26 @@
 -->
 <layout version="0.1.0">
 
+    <studioforty9_recaptcha_script>
+        <reference name="before_body_end">
+            <block type="studioforty9_recaptcha/explicit" name="studioforty9.recaptcha.script" as="studioforty9.recaptcha.script" template="studioforty9/recaptcha/script-tag.phtml"/>
+        </reference>
+    </studioforty9_recaptcha_script>
+
     <contacts_index_index>
         <reference name="contactForm">
             <block type="studioforty9_recaptcha/explicit" name="studioforty9.recaptcha.explicit" template="studioforty9/recaptcha/explicit.phtml">
                 <action method="setFormHandle"><value>contactForm</value></action>
             </block>
         </reference>
+        <update handle="studioforty9_recaptcha_script"/>
     </contacts_index_index>
 
     <review_product_list>
         <reference name="product.review.form">
             <block type="studioforty9_recaptcha/explicit" name="studioforty9.recaptcha.explicit" template="studioforty9/recaptcha/explicit.phtml"/>
         </reference>
+        <update handle="studioforty9_recaptcha_script"/>
     </review_product_list>
 
     <customer_account_login>
@@ -33,7 +41,8 @@
             <block type="core/text_list" name="form.additional.info">
                 <block type="studioforty9_recaptcha/explicit" name="studioforty9.recaptcha.explicit" template="studioforty9/recaptcha/explicit.phtml"/>
             </block>
-        </reference>  
+        </reference>
+        <update handle="studioforty9_recaptcha_script"/>
     </customer_account_login>
     
     <customer_account_forgotpassword>
@@ -42,6 +51,7 @@
                 <block type="studioforty9_recaptcha/explicit" name="studioforty9.recaptcha.explicit" template="studioforty9/recaptcha/explicit.phtml"/>
             </block>
         </reference>
+        <update handle="studioforty9_recaptcha_script"/>
     </customer_account_forgotpassword>
     
     <customer_account_create>
@@ -50,6 +60,7 @@
                 <block type="studioforty9_recaptcha/explicit" name="studioforty9.recaptcha.explicit" template="studioforty9/recaptcha/explicit.phtml"/>
             </block>
         </reference>
+        <update handle="studioforty9_recaptcha_script"/>
     </customer_account_create>
 
     <sendfriend_product_send>
@@ -58,6 +69,7 @@
                 <action method="setFormHandle"><value>productSendtofriendForm</value></action>
             </block>
         </reference>
+        <update handle="studioforty9_recaptcha_script"/>
     </sendfriend_product_send>
 
 </layout>

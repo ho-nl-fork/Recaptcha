@@ -1,0 +1,30 @@
+<?php
+/**
+ * Studioforty9_Recaptcha
+ *
+ * @category  Studioforty9
+ * @package   Studioforty9_Recaptcha
+ * @author    StudioForty9 <info@studioforty9.com>
+ * @copyright 2015 StudioForty9 (http://www.studioforty9.com)
+ * @license   https://github.com/studioforty9/recaptcha/blob/master/LICENCE BSD
+ * @version   1.5.7
+ * @link      https://github.com/studioforty9/recaptcha
+ * @see       Studioforty9_Recaptcha_Block_Explicit
+ */
+
+/** @var $this Studioforty9_Recaptcha_Block_Explicit */
+?>
+<script>
+    function recaptchaOnloadCallback()
+    {
+        if (typeof recaptchaRenderCallbacks === "undefined") {
+            return;
+        }
+
+        for (var i = 0; i < recaptchaRenderCallbacks.length; i++) {
+            (recaptchaRenderCallbacks[i])();
+        }
+        recaptchaRenderCallbacks = [];
+    }
+</script>
+<?php echo $this->getRecaptchaScript(); ?>

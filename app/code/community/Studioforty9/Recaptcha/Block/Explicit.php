@@ -68,8 +68,6 @@ class Studioforty9_Recaptcha_Block_Explicit extends Mage_Core_Block_Template
         'vi_VN' => 'vi'
     );
 
-    protected static $_initialized = false;
-
     /**
      * Is the block allowed to display.
      *
@@ -201,15 +199,5 @@ class Studioforty9_Recaptcha_Block_Explicit extends Mage_Core_Block_Template
     protected function _getHelper()
     {
         return Mage::helper('studioforty9_recaptcha');
-    }
-
-    public function getInitialized()
-    {
-        return self::$_initialized;
-    }
-
-    public function setInitialized($value)
-    {
-        self::$_initialized = $value;
     }
 }
