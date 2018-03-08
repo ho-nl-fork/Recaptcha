@@ -31,34 +31,28 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
                 }
                 recaptchaRenderCallbacks.push(function () {
                     var button = jQuery('#recaptcha-<?php echo $id ?>').closest('form').find('<?php echo $buttonSelector ?>')[0];
-                    jQuery(button).on('click',function(event, isLoaded){
-                        if (isLoaded == 'loaded') {
-                            return true;
-                        }
-                        var widgetId = grecaptcha.render(button, {
-                            'sitekey': "<?php echo $this->getSiteKey(); ?>",
-                            'theme': "<?php echo $this->getTheme(); ?>",
-                            'type': "<?php echo $this->getType(); ?>",
-                            'size': "invisible",
-                            'badge': "<?php echo $this->getBadgeLocation(); ?>",
-                            'error-callback': function() {
-                                recaptchaShowErrorAndRetry('<?php echo $id ?>', widgetId);
-                            },
-                            'callback': function(response) {
-                                var form = <?php echo $formHandle ?>;
-                                if (form.validator && form.validator.validate()){
-                                    console.log('reCaptcha ('+widgetId+') passsed and form is valid');
-                                    form.submit();
-                                } else {
-                                    console.log('reCaptcha ('+widgetId+') passsed but form not valid, resetting');
-                                    grecaptcha.reset(widgetId);
-                                }
+                    var widgetId = grecaptcha.render(button, {
+                        'sitekey': "<?php echo $this->getSiteKey(); ?>",
+                        'theme': "<?php echo $this->getTheme(); ?>",
+                        'type': "<?php echo $this->getType(); ?>",
+                        'size': "invisible",
+                        'badge': "<?php echo $this->getBadgeLocation(); ?>",
+                        'error-callback': function() {
+                            recaptchaShowErrorAndRetry('<?php echo $id ?>', widgetId);
+                        },
+                        'callback': function(response) {
+                            var form = <?php echo $formHandle ?>;
+                            if (form.validator && form.validator.validate()){
+                                console.log('reCaptcha ('+widgetId+') passsed and form is valid');
+                                form.submit();
+                            } else {
+                                console.log('reCaptcha ('+widgetId+') passsed but form not valid, resetting');
+                                grecaptcha.reset(widgetId);
                             }
-                        });
-
-                        jQuery(button).trigger('click', ['loaded']);
-                        return false;
+                        }
                     });
+                    console.log('reCaptcha widget '+widgetId+' rendered');
+                    jQuery(button).attr('data-widget-id', widgetId);
                 });
             </script>
         </div>
