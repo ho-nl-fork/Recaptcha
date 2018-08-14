@@ -20,31 +20,29 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
 
 ?>
 <?php if ($this->isAllowed($this->getAction()->getFullActionName())): ?>
-    <?php if ($this->getRecaptchaType() == 'invisible'): ?>
+    <?php if ($this->getRecaptchaType() === 'invisible'): ?>
         <ul class="messages" id="recaptcha-messages-<?php echo $id ?>" style="display: none">
             <li class="error-msg"><ul><li></li></ul></li>
         </ul>
+        <div id="recaptcha-placeholder-<?php echo $id ?>" data-sitekey="<?php echo $this->getSiteKey(); ?>" data-size="invisible"></div>
         <div class="recaptcha" id="recaptcha-<?php echo $id ?>">
             <script type="text/javascript">
                 if (typeof recaptchaRenderCallbacks === 'undefined') {
                     var recaptchaRenderCallbacks = [];
                 }
                 recaptchaRenderCallbacks.push(function () {
-                    var button = jQuery('#recaptcha-<?php echo $id ?>').closest('form').find('<?php echo $buttonSelector ?>')[0];
+                    var container = jQuery('#recaptcha-placeholder-<?php echo $id ?>')[0];
                     var form = <?php echo $formHandle ?>;
                     jQuery(form.form).one('click.captcha hover.captcha focus.captcha', function(){
                         jQuery(this).off('.captcha');
-                        var widgetId = grecaptcha.render(button, {
-                            'sitekey': "<?php echo $this->getSiteKey(); ?>",
+                        var widgetId = grecaptcha.render(container, {
                             'theme': "<?php echo $this->getTheme(); ?>",
                             'type': "<?php echo $this->getType(); ?>",
-                            'size': "invisible",
                             'badge': "<?php echo $this->getBadgeLocation(); ?>",
                             'error-callback': function() {
                                 recaptchaShowErrorAndRetry('<?php echo $id ?>', widgetId);
                             },
                             'callback': function(response) {
-                                var form = <?php echo $formHandle ?>;
                                 if (form.validator && form.validator.validate()){
                                     console.log('reCaptcha ('+widgetId+') passsed and form is valid');
                                     form.submit();
@@ -55,7 +53,17 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
                             }
                         });
                         console.log('reCaptcha widget '+widgetId+' rendered');
-                        jQuery(button).attr('data-widget-id', widgetId);
+                        jQuery(container).attr('data-widget-id', widgetId);
+
+                        // Stop normal form submission, so we can trigger validation and the recaptcha challenge in the
+                        // correct order. Actual form submission is done in the recaptcha callback that we specified in
+                        // the grecaptcha.render() call.
+                        jQuery(form.form).submit(function (event) {
+                            if (form.validator.validate()) {
+                                grecaptcha.execute(widgetId);
+                                event.preventDefault();
+                            }
+                        });
                     });
 
                 });
