@@ -14,6 +14,13 @@
 /**
  * Studioforty9_Recaptcha_Block_Explicit
  *
+ * @method string getFormHandle()
+ * @method Studioforty9_Recaptcha_Block_Explicit setFormHandle(string $value)
+ * @method string getButtonSelector()
+ * @method Studioforty9_Recaptcha_Block_Explicit setButtonSelector(string $value)
+ * @method string getSubmitMethod()
+ * @method Studioforty9_Recaptcha_Block_Explicit setSubmitMethod(string $value)
+ *
  * @category   Studioforty9
  * @package    Studioforty9_Recaptcha
  * @subpackage Block

@@ -17,6 +17,7 @@ $id = $this->getRecaptchaId();
 
 $formHandle = $this->getFormHandle() ? $this->getFormHandle() : 'dataForm';
 $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'button[type=submit]';
+$submitMethod = $this->getSubmitMethod() ? $this->getSubmitMethod() : 'form.submit()';
 
 ?>
 <?php if ($this->isAllowed($this->getAction()->getFullActionName())): ?>
@@ -44,7 +45,7 @@ $buttonSelector = $this->getButtonSelector() ? $this->getButtonSelector() : 'but
                             var form = <?php echo $formHandle ?>;
                             if (form.validator && form.validator.validate()){
                                 console.log('reCaptcha ('+widgetId+') passsed and form is valid');
-                                form.submit();
+                                <?= $submitMethod; ?>;
                             } else {
                                 console.log('reCaptcha ('+widgetId+') passsed but form not valid, resetting');
                                 grecaptcha.reset(widgetId);
