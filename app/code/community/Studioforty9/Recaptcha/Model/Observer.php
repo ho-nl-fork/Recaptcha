@@ -43,7 +43,8 @@ class Studioforty9_Recaptcha_Model_Observer
         if ($response->isSuccess()) return;
         
         /** reCAPTCHA Verification Failed **/
-        
+        $response->log();
+
         Mage::getSingleton('core/session')->addError(
             Mage::helper('studioforty9_recaptcha')->__(
                 'There was an error with the recaptcha code, please try again.'
