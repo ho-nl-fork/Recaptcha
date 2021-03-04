@@ -15,7 +15,7 @@
 <config>
     <modules>
         <Studioforty9_Recaptcha>
-            <active>true</active>
+            <active>false</active>
             <codePool>community</codePool>
         </Studioforty9_Recaptcha>
     </modules>
